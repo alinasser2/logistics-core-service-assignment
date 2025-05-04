@@ -6,8 +6,9 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 @Module({
   imports: [TypeOrmModule.forRoot({
       type: 'sqlite',
-      autoLoadEntities: true,
-      synchronize: false,
+      database: 'logistics.db',
+      entities: [],
+      synchronize: true,
   })],
   controllers: [AppController],
   providers: [AppService],
