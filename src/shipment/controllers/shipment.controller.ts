@@ -57,7 +57,7 @@ export class ShipmentController {
   @ApiParam({ name: 'id', type: String, description: 'Shipment ID' })
   @SwaggerApiResponse({
     status: 200,
-    description: 'Shipment status updated to "Out for Delivery"',
+    description: SuccessMessageEnum.SHIPMENT_CHECKOUT,
     type: ApiResponse,
   })
   async checkout(@Param('id') id: string) {
@@ -70,12 +70,28 @@ export class ShipmentController {
   @ApiParam({ name: 'id', type: String, description: 'Shipment ID' })
   @SwaggerApiResponse({
     status: 200,
-    description: 'Shipment status updated to "Delivered"',
+    description: SuccessMessageEnum.SHIPMENT_DELIVERED,
     type: ApiResponse,
   })
   async deliver(@Param('id') id: string) {
     const shipment = await this.shipmentService.updateStatus(id, ShipmentStatusEnum.DELIVERED);
     return ApiResponse.success(ShipmentResource.toJSON(shipment), SuccessMessageEnum.SHIPMENT_DELIVERED);
   }
+
+
+  // controllers/shipment.controller.ts
+  @Delete(':id')
+  @ApiOperation({ summary: 'Soft delete a shipment by ID' })
+  @ApiParam({ name: 'id', type: String, description: 'Shipment ID' })
+  @SwaggerApiResponse({
+    status: 200,
+    description: SuccessMessageEnum.SHIPMENT_DELETED,
+    type: ApiResponse,
+  })
+  async delete(@Param('id') id: string) {
+    await this.shipmentService.softDelete(id);
+    return ApiResponse.success(null, SuccessMessageEnum.SHIPMENT_DELETED);
+  }
+
 
 }
