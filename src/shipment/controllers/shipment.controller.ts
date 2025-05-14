@@ -8,6 +8,7 @@ import { ApiOperation, ApiResponse as SwaggerApiResponse, ApiQuery, ApiParam } f
 import { ShipmentStatusEnum } from '../enums/shipment-status.enum';
 import { SuccessMessageEnum } from '../enums/shipment-success-message.enum';
 import { PAGINATION } from '../../common/constants/app-constants';
+import { Throttle } from '@nestjs/throttler';
 
 @Controller('shipments')
 export class ShipmentController {
