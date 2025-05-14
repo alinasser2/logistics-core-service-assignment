@@ -5,4 +5,5 @@ export enum SuccessMessageEnum {
   SHIPMENT_CHECKOUT = 'Shipment checked out',
   SHIPMENT_DELIVERED = 'Shipment delivered successfully',
   SHIPMENTS_RETRIEVED = 'Shipments retrieved successfully',
+
 }
