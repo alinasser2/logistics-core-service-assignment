@@ -6,11 +6,12 @@ import { ShipmentService } from './services/shipment.service';
 import { ShipmentRepository } from './repositories/shipment.repository';
 import { StatusRepository } from './repositories/status.repository';
 import { ShipmentController } from './controllers/shipment.controller';
+import { CachedShipmentRepository } from './repositories/shipment-cache.repository';
 
 @Module({
   imports: [TypeOrmModule.forFeature([Shipment, Status])],
   controllers: [ShipmentController], 
-  providers: [ShipmentService, ShipmentRepository, StatusRepository],
+  providers: [ShipmentService, ShipmentRepository, StatusRepository, CachedShipmentRepository],
   exports: [ShipmentService],
 })
 export class ShipmentModule {}
