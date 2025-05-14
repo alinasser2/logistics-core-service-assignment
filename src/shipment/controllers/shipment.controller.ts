@@ -1,11 +1,13 @@
 import { Controller, Get, Post, Body, Param, Delete, Patch } from '@nestjs/common';
-import { ShipmentService } from './shipment.service';
-import { CreateShipmentDto } from './dto/create-shipment.dto';
-import { ApiResponse } from '../common/resources/api-response.resource';
-import { ShipmentResource } from './resources/shipment.resource';
-import { ShipmentDetailResource } from './resources/shipment-detail.resource';
+import { ShipmentService } from '../services/shipment.service';
+import { CreateShipmentDto } from '../dto/create-shipment.dto';
+import { ApiResponse } from '../../common/resources/api-response.resource';
+import { ShipmentResource } from '../resources/shipment.resource';
 import { Query } from '@nestjs/common';
 import { ApiOperation, ApiResponse as SwaggerApiResponse, ApiQuery, ApiParam } from '@nestjs/swagger';
+import { ShipmentStatusEnum } from '../enums/shipment-status.enum';
+import { SuccessMessageEnum } from '../enums/shipment-success-message.enum';
+import { PAGINATION } from '../../common/constants/app-constants';
 
 @Controller('shipments')
 export class ShipmentController {
@@ -22,8 +24,8 @@ export class ShipmentController {
     type: ApiResponse,
   })
   async findAll(
-    @Query('page') page: number = 1,
-    @Query('limit') limit: number = 10,
+    @Query('page') page: number = PAGINATION.DEFAULT_PAGE,
+    @Query('limit') limit: number = PAGINATION.DEFAULT_LIMIT,
   ) {
     const result = await this.shipmentService.findAllPaginated(+page, +limit);
 
@@ -32,7 +34,7 @@ export class ShipmentController {
         items: ShipmentResource.collection(result.data),
         meta: result.meta,
       },
-      'Shipments retrieved successfully'
+      SuccessMessageEnum.SHIPMENTS_RETRIEVED,
     );
   }
 
@@ -46,7 +48,7 @@ export class ShipmentController {
   })
   async create(@Body() dto: CreateShipmentDto) {
     const shipment = await this.shipmentService.create(dto);
-    return ApiResponse.success(ShipmentResource.toJSON(shipment), 'Shipment created successfully', 201);
+    return ApiResponse.success(ShipmentResource.toJSON(shipment), SuccessMessageEnum.SHIPMENT_CREATED, 201);
   }
 
   @Patch(':id/checkout')
@@ -58,8 +60,8 @@ export class ShipmentController {
     type: ApiResponse,
   })
   async checkout(@Param('id') id: string) {
-    const shipment = await this.shipmentService.updateStatus(id, 'Out for Delivery');
-    return ApiResponse.success(ShipmentResource.toJSON(shipment), 'Shipment checked out');
+    const shipment = await this.shipmentService.updateStatus(id, ShipmentStatusEnum.OUT_FOR_DELIVERY);
+    return ApiResponse.success(ShipmentResource.toJSON(shipment), SuccessMessageEnum.SHIPMENT_CHECKOUT);
   }
 
   @Patch(':id/deliver')
@@ -71,7 +73,8 @@ export class ShipmentController {
     type: ApiResponse,
   })
   async deliver(@Param('id') id: string) {
-    const shipment = await this.shipmentService.updateStatus(id, 'Delivered');
-    return ApiResponse.success(ShipmentResource.toJSON(shipment), 'Shipment delivered');
+    const shipment = await this.shipmentService.updateStatus(id, ShipmentStatusEnum.DELIVERED);
+    return ApiResponse.success(ShipmentResource.toJSON(shipment), SuccessMessageEnum.SHIPMENT_DELIVERED);
   }
+
 }
