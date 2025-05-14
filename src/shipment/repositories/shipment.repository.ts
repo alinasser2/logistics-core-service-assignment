@@ -35,4 +35,8 @@ export class ShipmentRepository {
   async findByTrackingId(trackingId: string): Promise<Shipment | null> {
     return this.repo.findOne({ where: { trackingId } });
   }
+
+  async softDelete(id: string): Promise<void> {
+  await this.repo.softDelete(id);
+}
 }
