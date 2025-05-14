@@ -4,15 +4,15 @@ import { ShipmentRepository } from '../repositories/shipment.repository';
 import { StatusRepository } from '../repositories/status.repository';
 import { ShipmentStatusEnum } from '../enums/shipment-status.enum';
 
-// ✅ Import custom exceptions
 import { ShipmentNotFoundException } from '../exceptions/shipment-not-found.exception';
 import { StatusNotFoundException } from '../exceptions/status-not-found.exception';
 import { DuplicateTrackingIdException } from '../exceptions/duplicate-tracking-id.exception';
+import { CachedShipmentRepository } from '../repositories/shipment-cache.repository';
 
 @Injectable()
 export class ShipmentService {
   constructor(
-    private readonly shipmentRepo: ShipmentRepository,
+    private readonly shipmentRepo: CachedShipmentRepository,
     private readonly statusRepo: StatusRepository,
   ) {}
 
