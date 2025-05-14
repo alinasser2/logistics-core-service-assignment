@@ -14,9 +14,26 @@ export class ShipmentService {
     private statusRepo: Repository<Status>,
   ) {}
 
-  async findAll() {
-    return await this.shipmentRepo.find();
-  }
+async findAllPaginated(page = 1, limit = 10) {
+  const [data, total] = await this.shipmentRepo.findAndCount({
+    take: limit,
+    skip: (page - 1) * limit,
+    order: { createdAt: 'DESC' },
+    relations: ['status'],
+  });
+
+  return {
+    data, 
+    meta: {
+      total,
+      page,
+      limit,
+      lastPage: Math.ceil(total / limit),
+    },
+  };
+}
+
+
 
   async create(dto: CreateShipmentDto) {
     const status = await this.statusRepo.findOne({ where: { name: 'Ready to Pick Up' } });
