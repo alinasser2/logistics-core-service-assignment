@@ -61,4 +61,12 @@ export class ShipmentService {
     shipment.status = status;
     return this.shipmentRepo.save(shipment);
   }
+
+async softDelete(id: string): Promise<void> {
+  const shipment = await this.shipmentRepo.findById(id);
+  if (!shipment) throw new ShipmentNotFoundException();
+
+  await this.shipmentRepo.softDelete(id);
+}
+
 }
