@@ -20,7 +20,7 @@ export class ShipmentController {
   @ApiQuery({ name: 'limit', required: false, type: Number, description: 'Number of items per page' })
   @SwaggerApiResponse({
     status: 200,
-    description: 'Successfully retrieved shipments',
+    description: SuccessMessageEnum.SHIPMENTS_RETRIEVED,
     type: ApiResponse,
   })
   async findAll(
@@ -43,7 +43,7 @@ export class ShipmentController {
   @ApiOperation({ summary: 'Create a new shipment' })
   @SwaggerApiResponse({
     status: 201,
-    description: 'Successfully created a shipment',
+    description: SuccessMessageEnum.SHIPMENT_CREATED,
     type: ApiResponse,
   })
   async create(@Body() dto: CreateShipmentDto) {
