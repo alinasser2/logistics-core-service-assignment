@@ -1,9 +1,9 @@
-import { Module } from '@nestjs/common';
+import { Module, forwardRef } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { Shipment } from './entities/shipment.entity';
 import { Status } from './entities/status.entity';
 import { ShipmentService } from './services/shipment.service';
-import { ShipmentRepository } from './repositories/shipment.repository';
+import { ShipmentRepositoryImpl } from './repositories/shipment.repository.impl';
 import { StatusRepository } from './repositories/status.repository';
 import { ShipmentController } from './controllers/shipment.controller';
 import { CachedShipmentRepository } from './repositories/shipment-cache.repository';
@@ -11,7 +11,17 @@ import { CachedShipmentRepository } from './repositories/shipment-cache.reposito
 @Module({
   imports: [TypeOrmModule.forFeature([Shipment, Status])],
   controllers: [ShipmentController], 
-  providers: [ShipmentService, ShipmentRepository, StatusRepository, CachedShipmentRepository],
+  providers: [
+    ShipmentService,
+    ShipmentRepositoryImpl,
+    CachedShipmentRepository,
+    {
+      provide: 'IShipmentRepository',
+      useExisting: CachedShipmentRepository,
+    },
+    StatusRepository,
+  ],
+
   exports: [ShipmentService],
 })
 export class ShipmentModule {}
