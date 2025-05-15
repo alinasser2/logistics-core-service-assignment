@@ -3,10 +3,10 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { Shipment } from './entities/shipment.entity';
 import { Status } from './entities/status.entity';
 import { ShipmentService } from './services/shipment.service';
-import { ShipmentRepositoryImpl } from './repositories/shipment.repository.impl';
-import { StatusRepository } from './repositories/status.repository';
-import { ShipmentController } from './controllers/shipment.controller';
-import { CachedShipmentRepository } from './repositories/shipment-cache.repository';
+import { ShipmentRepositoryImpl } from './repositories/implementations/shipment.repository.impl';
+import { StatusRepository } from './repositories/implementations/status.repository';
+import { ShipmentController } from './web/controllers/shipment.controller';
+import { ShipmentRepositoryProxy } from './repositories/implementations/shipment.repository.proxy';
 
 @Module({
   imports: [TypeOrmModule.forFeature([Shipment, Status])],
@@ -14,10 +14,10 @@ import { CachedShipmentRepository } from './repositories/shipment-cache.reposito
   providers: [
     ShipmentService,
     ShipmentRepositoryImpl,
-    CachedShipmentRepository,
+    ShipmentRepositoryProxy,
     {
       provide: 'IShipmentRepository',
-      useExisting: CachedShipmentRepository,
+      useExisting: ShipmentRepositoryProxy,
     },
     StatusRepository,
   ],
