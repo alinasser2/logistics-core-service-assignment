@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
-import { CreateShipmentDto } from '../dto/create-shipment.dto';
-import { StatusRepository } from '../repositories/status.repository';
+import { CreateShipmentDto } from '../web/dto/create-shipment.dto';
+import { StatusRepository } from '../repositories/implementations/status.repository';
 import { ShipmentStatusEnum } from '../enums/shipment-status.enum';
 
 import { ShipmentNotFoundException } from '../exceptions/shipment-not-found.exception';

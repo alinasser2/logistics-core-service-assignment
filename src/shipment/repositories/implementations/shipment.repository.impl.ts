@@ -2,8 +2,8 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
-import { Shipment } from '../entities/shipment.entity';
-import { IShipmentRepository } from './shipment.repository.interface';
+import { Shipment } from '../../entities/shipment.entity';
+import { IShipmentRepository } from '../shipment.repository.interface';
 
 @Injectable()
 export class ShipmentRepositoryImpl implements IShipmentRepository{

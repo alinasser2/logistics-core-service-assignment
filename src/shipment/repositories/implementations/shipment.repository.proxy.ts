@@ -2,11 +2,11 @@ import { Injectable, Inject } from '@nestjs/common';
 import { CACHE_MANAGER } from '@nestjs/cache-manager';
 import { Cache } from 'cache-manager';
 import { ShipmentRepositoryImpl } from './shipment.repository.impl';
-import { Shipment } from '../entities/shipment.entity';
-import { IShipmentRepository } from './shipment.repository.interface';
+import { Shipment } from '../../entities/shipment.entity';
+import { IShipmentRepository } from '../shipment.repository.interface';
 
 @Injectable()
-export class CachedShipmentRepository implements IShipmentRepository {
+export class ShipmentRepositoryProxy implements IShipmentRepository {
   constructor(
     private readonly shipmentRepo: ShipmentRepositoryImpl,
     @Inject(CACHE_MANAGER) private cacheManager: Cache,
@@ -75,9 +75,8 @@ export class CachedShipmentRepository implements IShipmentRepository {
   async softDelete(id: string): Promise<void> {
     await this.shipmentRepo.softDelete(id);
 
-    // Invalidate all relevant caches
     await this.cacheManager.del(`shipment:id:${id}`);
-    // Optional: delete paginated cache if needed
+
     
   }
 

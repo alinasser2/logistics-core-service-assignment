@@ -1,18 +1,19 @@
-import { Shipment } from '../entities/shipment.entity';
+import { Shipment } from '../../entities/shipment.entity';
 
-export class ShipmentDetailResource {
+export class ShipmentResource {
   static toJSON(shipment: Shipment) {
     return {
       id: shipment.id,
       trackingId: shipment.trackingId,
       phoneNumber: shipment.phoneNumber,
       description: shipment.description,
-      status: {
-        id: shipment.status?.id ?? null,
-        name: shipment.status?.name ?? null,
-      },
+      status: shipment.status?.name ?? null,
       createdAt: shipment.createdAt,
       updatedAt: shipment.updatedAt,
     };
+  }
+
+  static collection(shipments: Shipment[]) {
+    return shipments.map(this.toJSON);
   }
 }
