@@ -1,19 +1,20 @@
 import { Injectable } from '@nestjs/common';
 import { CreateShipmentDto } from '../dto/create-shipment.dto';
-import { ShipmentRepository } from '../repositories/shipment.repository';
 import { StatusRepository } from '../repositories/status.repository';
 import { ShipmentStatusEnum } from '../enums/shipment-status.enum';
 
 import { ShipmentNotFoundException } from '../exceptions/shipment-not-found.exception';
 import { StatusNotFoundException } from '../exceptions/status-not-found.exception';
 import { DuplicateTrackingIdException } from '../exceptions/duplicate-tracking-id.exception';
-import { CachedShipmentRepository } from '../repositories/shipment-cache.repository';
+import { IShipmentRepository } from '../repositories/shipment.repository.interface';
+import { Inject } from '@nestjs/common';
 
 @Injectable()
 export class ShipmentService {
   constructor(
-    private readonly shipmentRepo: CachedShipmentRepository,
-    private readonly statusRepo: StatusRepository,
+    @Inject('IShipmentRepository')
+    private readonly shipmentRepo: IShipmentRepository,
+    private readonly statusRepo: StatusRepository, // injected normally
   ) {}
 
   async findAllPaginated(page = 1, limit = 10) {
@@ -62,11 +63,10 @@ export class ShipmentService {
     return this.shipmentRepo.save(shipment);
   }
 
-async softDelete(id: string): Promise<void> {
-  const shipment = await this.shipmentRepo.findById(id);
-  if (!shipment) throw new ShipmentNotFoundException();
+  async softDelete(id: string): Promise<void> {
+    const shipment = await this.shipmentRepo.findById(id);
+    if (!shipment) throw new ShipmentNotFoundException();
 
-  await this.shipmentRepo.softDelete(id);
-}
-
+    await this.shipmentRepo.softDelete(id);
+  }
 }
