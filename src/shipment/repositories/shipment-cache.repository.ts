@@ -1,13 +1,14 @@
 import { Injectable, Inject } from '@nestjs/common';
 import { CACHE_MANAGER } from '@nestjs/cache-manager';
 import { Cache } from 'cache-manager';
-import { ShipmentRepository } from './shipment.repository';
+import { ShipmentRepositoryImpl } from './shipment.repository.impl';
 import { Shipment } from '../entities/shipment.entity';
+import { IShipmentRepository } from './shipment.repository.interface';
 
 @Injectable()
-export class CachedShipmentRepository {
+export class CachedShipmentRepository implements IShipmentRepository {
   constructor(
-    private readonly shipmentRepo: ShipmentRepository,
+    private readonly shipmentRepo: ShipmentRepositoryImpl,
     @Inject(CACHE_MANAGER) private cacheManager: Cache,
   ) {}
 
