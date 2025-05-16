@@ -18,7 +18,7 @@ export class ShipmentRepositoryProxy implements IShipmentRepository {
 
     if (!cached) {
       const data = await this.shipmentRepo.findPaginated(
-        (page - 1) * limit,
+        page,
         limit,
       );
       await this.cacheManager.set(cacheKey, data, 60); 
