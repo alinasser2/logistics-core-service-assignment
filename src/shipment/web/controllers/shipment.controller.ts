@@ -78,7 +78,6 @@ export class ShipmentController {
   }
 
 
-  // controllers/shipment.controller.ts
   @Delete(':id')
   @ApiOperation({ summary: 'Soft delete a shipment by ID' })
   @ApiParam({ name: 'id', type: String, description: 'Shipment ID' })
