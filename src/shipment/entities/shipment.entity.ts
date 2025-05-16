@@ -20,7 +20,7 @@ export class Shipment {
   trackingId: string;
 
   @Column({ name: 'phone_number' })
-   @Index()
+  @Index()
   phoneNumber: string;
 
   @Column()
