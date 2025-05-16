@@ -16,7 +16,7 @@ export class ShipmentService {
   constructor(
     @Inject('IShipmentRepository')
     private readonly shipmentRepo: IShipmentRepository,
-    private readonly statusRepo: StatusRepository, // injected normally
+    private readonly statusRepo: StatusRepository, 
   ) {}
 
   async findAllPaginated(page = 1, limit = 10) {
