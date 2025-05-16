@@ -1,98 +1,354 @@
-<p align="center">
-  <a href="http://nestjs.com/" target="blank"><img src="https://nestjs.com/img/logo-small.svg" width="120" alt="Nest Logo" /></a>
-</p>
 
-[circleci-image]: https://img.shields.io/circleci/build/github/nestjs/nest/master?token=abc123def456
-[circleci-url]: https://circleci.com/gh/nestjs/nest
+  
 
-  <p align="center">A progressive <a href="http://nodejs.org" target="_blank">Node.js</a> framework for building efficient and scalable server-side applications.</p>
-    <p align="center">
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/v/@nestjs/core.svg" alt="NPM Version" /></a>
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/l/@nestjs/core.svg" alt="Package License" /></a>
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/dm/@nestjs/common.svg" alt="NPM Downloads" /></a>
-<a href="https://circleci.com/gh/nestjs/nest" target="_blank"><img src="https://img.shields.io/circleci/build/github/nestjs/nest/master" alt="CircleCI" /></a>
-<a href="https://discord.gg/G7Qnnhy" target="_blank"><img src="https://img.shields.io/badge/discord-online-brightgreen.svg" alt="Discord"/></a>
-<a href="https://opencollective.com/nest#backer" target="_blank"><img src="https://opencollective.com/nest/backers/badge.svg" alt="Backers on Open Collective" /></a>
-<a href="https://opencollective.com/nest#sponsor" target="_blank"><img src="https://opencollective.com/nest/sponsors/badge.svg" alt="Sponsors on Open Collective" /></a>
-  <a href="https://paypal.me/kamilmysliwiec" target="_blank"><img src="https://img.shields.io/badge/Donate-PayPal-ff3f59.svg" alt="Donate us"/></a>
-    <a href="https://opencollective.com/nest#sponsor"  target="_blank"><img src="https://img.shields.io/badge/Support%20us-Open%20Collective-41B883.svg" alt="Support us"></a>
-  <a href="https://twitter.com/nestframework" target="_blank"><img src="https://img.shields.io/twitter/follow/nestframework.svg?style=social&label=Follow" alt="Follow us on Twitter"></a>
-</p>
-  <!--[![Backers on Open Collective](https://opencollective.com/nest/backers/badge.svg)](https://opencollective.com/nest#backer)
-  [![Sponsors on Open Collective](https://opencollective.com/nest/sponsors/badge.svg)](https://opencollective.com/nest#sponsor)-->
+# 🚀 Shipment Backend System Documentation
 
-## Description
+  
 
-[Nest](https://github.com/nestjs/nest) framework TypeScript starter repository.
+Welcome to the documentation for the Shipment Backend System. This guide outlines the project's folder structure, design patterns, and key features, providing a comprehensive overview for developers and stakeholders.
 
-## Project setup
+  
 
-```bash
-$ yarn install
+----------
+
+  
+
+## 📂 Folder Structure
+
+  
+
+The project is organized into a modular structure to ensure clarity and scalability. Below is the detailed folder hierarchy:
+
+  
+
 ```
 
-## Compile and run the project
+├── app.controller.spec.ts
 
-```bash
-# development
-$ yarn run start
+├── app.module.ts
 
-# watch mode
-$ yarn run start:dev
+├── main.ts
 
-# production mode
-$ yarn run start:prod
+│
+
+├── common/
+
+│ ├── constants/
+
+│ │ └── app-constants.ts
+
+│ ├── exceptions/
+
+│ │ └── base.exception.ts
+
+│ ├── filters/
+
+│ │ └── http-exception.filter.ts
+
+│ └── resources/
+
+│ └── api-response.resource.ts
+
+│
+
+├── database/
+
+│ └── seed.ts
+
+│
+
+└── shipment/
+
+├── shipment.module.ts
+
+├── entities/
+
+│ ├── shipment.entity.ts
+
+│ └── status.entity.ts
+
+├── enums/
+
+│ ├── error-messages.enum.ts
+
+│ ├── shipment-status.enum.ts
+
+│ └── shipment-success-message.enum.ts
+
+├── exceptions/
+
+│ ├── duplicate-tracking-id.exception.ts
+
+│ ├── invalid-shipment-status-transition.exception.ts
+
+│ ├── shipment-not-found.exception.ts
+
+│ ├── shipment-status-already-set.exception.ts
+
+│ └── status-not-found.exception.ts
+
+├── repositories/
+
+│ ├── shipment.repository.interface.ts
+
+│ └── implementations/
+
+│ ├── shipment.repository.impl.ts
+
+│ ├── shipment.repository.proxy.ts
+
+│ └── status.repository.ts
+
+├── services/
+
+│ └── shipment.service.ts
+
+└── web/
+
+├── controllers/
+
+│ └── shipment.controller.ts
+
+├── dto/
+
+│ └── create-shipment.dto.ts
+
+└── resources/
+
+├── shipment-detail.resource.ts
+
+└── shipment.resource.ts
+
+  
+
 ```
 
-## Run tests
+  
 
-```bash
-# unit tests
-$ yarn run test
+----------
 
-# e2e tests
-$ yarn run test:e2e
+  
 
-# test coverage
-$ yarn run test:cov
+## 🧩 Design Patterns
+
+  
+
+The system leverages industry-standard design patterns to ensure maintainability, scalability, and performance.
+
+  
+
+### Singleton Pattern
+
+  
+
+-  **Used In**: Beans and configurations
+
+-  **Purpose**: Ensures a single instance of critical components, reducing resource overhead and maintaining consistency.
+
+  
+
+### 🔄 Proxy Design Pattern
+
+  
+
+-  **Used In**: `shipment.repository.proxy.ts`
+
+-  **Purpose**: Implements a caching layer over `ShipmentRepositoryImpl` using NestJS `CACHE_MANAGER`.
+
+-  **Benefit**: Reduces database queries, improving response times.
+
+  
+
+**Example**:
+
+  
+
+```ts
+
+const  cacheKey = `shipment:id:${id}`;
+
+let  cached = await  this.cacheManager.get<Shipment>(cacheKey);
+
+  
+
+if (!cached) {
+
+const  shipment = await  this.shipmentRepo.findById(id);
+
+await  this.cacheManager.set(cacheKey, shipment, 300);
+
+}
+
+  
+
 ```
 
-## Deployment
+  
 
-When you're ready to deploy your NestJS application to production, there are some key steps you can take to ensure it runs as efficiently as possible. Check out the [deployment documentation](https://docs.nestjs.com/deployment) for more information.
+### 📚 Repository Pattern
 
-If you are looking for a cloud-based platform to deploy your NestJS application, check out [Mau](https://mau.nestjs.com), our official platform for deploying NestJS applications on AWS. Mau makes deployment straightforward and fast, requiring just a few simple steps:
+  
 
-```bash
-$ yarn install -g @nestjs/mau
-$ mau deploy
+-  **Interface**: `shipment.repository.interface.ts`
+
+-  **Concrete Implementation**: `shipment.repository.impl.ts`
+
+-  **Proxy Decorator**: `shipment.repository.proxy.ts`
+
+-  **Purpose**: Abstracts database access, promoting separation of concerns and enhancing testability.
+
+  
+
+----------
+
+  
+
+## 💡 Key Features
+
+  
+
+The Shipment Backend System includes powerful features to optimize performance, ensure consistency, and improve developer experience.
+
+  
+
+### 1. ✅ Caching Layer
+
+  
+
+-  **Cached Methods**: `findById`, `findByTrackingId`, `findPaginated`
+
+-  **Technology**: Backed by NestJS `CacheManager`
+
+-  **Benefit**: Minimizes database load, boosting performance for frequently accessed data.
+
+  
+
+### 2. 📑 Global Exception Handling
+
+  
+
+-  **File**: `common/filters/http-exception.filter.ts`
+
+-  **Purpose**: Captures all exceptions and returns a standardized error response.
+
+-  **Benefit**: Simplifies debugging and ensures consistent API error responses.
+
+  
+
+**Example**:
+
+  
+
+```json
+
+{
+
+"errorResponse": {
+
+"status": 400,
+
+"message": "Invalid status transition"
+
+}
+
+}
+
+  
+
 ```
 
-With Mau, you can deploy your application in just a few clicks, allowing you to focus on building features rather than managing infrastructure.
+  
 
-## Resources
+### 3. 📦 Custom Exceptions with BaseException
 
-Check out a few resources that may come in handy when working with NestJS:
+  
 
-- Visit the [NestJS Documentation](https://docs.nestjs.com) to learn more about the framework.
-- For questions and support, please visit our [Discord channel](https://discord.gg/G7Qnnhy).
-- To dive deeper and get more hands-on experience, check out our official video [courses](https://courses.nestjs.com/).
-- Deploy your application to AWS with the help of [NestJS Mau](https://mau.nestjs.com) in just a few clicks.
-- Visualize your application graph and interact with the NestJS application in real-time using [NestJS Devtools](https://devtools.nestjs.com).
-- Need help with your project (part-time to full-time)? Check out our official [enterprise support](https://enterprise.nestjs.com).
-- To stay in the loop and get updates, follow us on [X](https://x.com/nestframework) and [LinkedIn](https://linkedin.com/company/nestjs).
-- Looking for a job, or have a job to offer? Check out our official [Jobs board](https://jobs.nestjs.com).
+-  **Base Class**: `base.exception.ts`
 
-## Support
+-  **Usage**: All domain-specific exceptions extend this class.
 
-Nest is an MIT-licensed open source project. It can grow thanks to the sponsors and support by the amazing backers. If you'd like to join them, please [read more here](https://docs.nestjs.com/support).
+-  **Message Source**: Driven by `error-messages.enum.ts` for consistency.
 
-## Stay in touch
+  
 
-- Author - [Kamil Myśliwiec](https://twitter.com/kammysliwiec)
-- Website - [https://nestjs.com](https://nestjs.com/)
-- Twitter - [@nestframework](https://twitter.com/nestframework)
+**Example**:
 
-## License
+  
 
-Nest is [MIT licensed](https://github.com/nestjs/nest/blob/master/LICENSE).
+```ts
+
+throw  new  InvalidShipmentStatusTransitionException();
+
+  
+
+```
+
+  
+
+### 4. 📬 Standardized API Response
+
+  
+
+-  **File**: `common/resources/api-response.resource.ts`
+
+-  **Purpose**: Ensures all success responses follow a uniform structure.
+
+-  **Benefit**: Enhances API predictability and client integration.
+
+  
+
+**Example**:
+
+  
+
+```ts
+
+ApiResponse.success(data, 'Fetched successfully');
+
+  
+
+```
+
+  
+
+**Output**:
+
+  
+
+```json
+
+{
+
+"statusCode": 200,
+
+"message": "Fetched successfully",
+
+"data": { ... }
+
+}
+
+  
+
+```
+
+  
+
+### 5. 🧮 Pagination Constants
+
+  
+
+-  **File**: `app-constants.ts`
+
+-  **Purpose**: Defines reusable pagination defaults across repository and controller layers.
+
+-  **Constants**:
+
+```ts
+
+DEFAULT_PAGE = 1;
+
+DEFAULT_LIMIT = 10;
+
+MAX_LIMIT = 100;
+
+```
